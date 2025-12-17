@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eco Choice Island - Fixed</title>
+<title>Eco Choice Island - Hidden Eco Points</title>
 <style>
-/* 基礎樣式和字體設置 */
 body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 更改為更通用的字體 */
-    background: #e6f7ff; /* 輕微修改背景色 */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: #e6f7ff; 
     margin: 0; 
     padding: 20px; 
     display: flex;
@@ -21,10 +20,8 @@ h1 {
     color: #00796b;
     margin-bottom: 5px;
 }
-/* 狀態欄樣式：使用 Flexbox 確保對齊 */
 .status { 
     display: flex; 
-    flex-wrap: wrap; 
     justify-content: space-around; 
     margin: 15px 0; 
     font-size: 20px; 
@@ -35,26 +32,18 @@ h1 {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-.status div {
-    padding: 0 10px;
-}
-
-/* 卡片容器：使用 Flexbox 或 Grid 讓商品並排顯示 */
+.status div { padding: 0 10px; }
 #shop {
     display: grid;
-    grid-template-columns: 1fr; /* 默認單欄 */
+    grid-template-columns: 1fr; 
     gap: 20px;
     width: 100%;
     max-width: 700px;
     margin-top: 20px;
 }
 @media (min-width: 600px) {
-    #shop {
-        grid-template-columns: 1fr 1fr; /* 寬螢幕時兩欄 */
-    }
+    #shop { grid-template-columns: 1fr 1fr; }
 }
-
-/* 單個商品卡片樣式 */
 .card { 
     background: #ffffff; 
     border-radius: 12px; 
@@ -63,22 +52,9 @@ h1 {
     border: 1px solid #c8e6c9;
     transition: transform 0.2s;
 }
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
-}
-
-.card h3 { 
-    font-size: 20px; 
-    margin-top: 0; 
-    color: #388e3c;
-}
-.card p {
-    font-size: 16px;
-    margin: 5px 0;
-}
-
-/* 按鈕樣式 */
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+.card h3 { font-size: 20px; margin-top: 0; color: #388e3c; }
+.card p { font-size: 16px; margin: 5px 0; }
 button { 
     width: 100%; 
     padding: 12px 0; 
@@ -91,15 +67,8 @@ button {
     cursor: pointer; 
     transition: background-color 0.2s;
 }
-button:hover:not(.disabled) {
-    background-color: #43a047;
-}
-button.disabled { 
-    background-color: #bdbdbd; 
-    cursor: not-allowed; 
-}
-
-/* 訊息和結果顯示區 */
+button:hover:not(.disabled) { background-color: #43a047; }
+button.disabled { background-color: #bdbdbd; cursor: not-allowed; }
 #message {
     width: 100%;
     max-width: 600px;
@@ -111,12 +80,7 @@ button.disabled {
     color: #d32f2f;
     font-weight: bold;
 }
-.footer { 
-    margin-top: 25px; 
-    text-align: center; 
-    font-size: 14px; 
-    color: #555; 
-}
+.footer { margin-top: 25px; text-align: center; font-size: 14px; color: #555; }
 </style>
 </head>
 <body>
@@ -125,10 +89,9 @@ button.disabled {
 
 <div class="status">
   <div>💰 Money: <span id="money">1000</span></div>
-  <div>🌍 Eco Points: <span id="eco">0</span></div>
 </div>
 
-<div id="message">Tip: Choose eco-friendly products to increase Eco Points!</div>
+<div id="message">Tip: Choose wisely!</div>
 
 <div id="shop"></div>
 
@@ -141,53 +104,42 @@ let round = 0;
 const shop = document.getElementById("shop");
 const messageBox = document.getElementById("message");
 
-// 四組商品，每組二選一
+// 商品組合，eco 分數隱藏
 const groups = [
   [
-    { name: "Disposable Correction Tape", cost: 20, eco: -5, desc: "Cheap and convenient, not eco-friendly." },
-    { name: "Reusable Correction Tape", cost: 40, eco: 10, desc: "Refillable, good for the Earth." }
+    { name: "Disposable Correction Tape", cost: 20, eco: -5, desc: "Cheap and convenient." },
+    { name: "Reusable Correction Tape", cost: 40, eco: 10, desc: "Refillable and sustainable." }
   ],
   [
     { name: "Plastic Building Blocks", cost: 500, eco: -15, desc: "Fun but made of plastic." },
-    { name: "Wooden Building Blocks", cost: 700, eco: 20, desc: "Made of wood, eco-friendly." }
+    { name: "Wooden Building Blocks", cost: 700, eco: 20, desc: "Made of wood." }
   ],
   [
-    { name: "Individually Wrapped Egg Rolls", cost: 400, eco: -10, desc: "Lots of packaging waste." },
-    { name: "Canned Egg Rolls", cost: 200, eco: 15, desc: "Less packaging, better for Earth." }
+    { name: "Individually Wrapped Egg Rolls", cost: 400, eco: -10, desc: "Lots of packaging." },
+    { name: "Canned Egg Rolls", cost: 200, eco: 15, desc: "Less packaging." }
   ],
   [
-    { name: "Bubble Tea in Plastic Cup", cost: 70, eco: -8, desc: "Convenient, but uses plastic." },
-    { name: "Bubble Tea in Reusable Cup", cost: 60, eco: 12, desc: "Bring your own cup, eco-friendly." }
+    { name: "Bubble Tea in Plastic Cup", cost: 70, eco: -8, desc: "Plastic cup." },
+    { name: "Bubble Tea in Reusable Cup", cost: 60, eco: 12, desc: "Bring your own cup." }
   ]
 ];
 
 function render() {
-  // 1. 更新狀態欄
   document.getElementById("money").innerText = money;
-  document.getElementById("eco").innerText = eco;
 
-  // 2. 檢查遊戲是否結束
   if (round >= groups.length || money < Math.min(...groups[round].map(item => item.cost))) {
+    // 結算顯示 eco 分數
     let result = "";
     let color = "";
-    if (eco >= 50) {
-      result = "🎉 Eco Hero! You really care for the planet!";
-      color = "#4caf50";
-    }
-    else if (eco >= 20) {
-      result = "🙂 Eco Learner! You are learning to make eco-friendly choices.";
-      color = "#ff9800";
-    }
-    else {
-      result = "⚠️ Eco Needs Help! Try to choose more eco-friendly items next time.";
-      color = "#f44336";
-    }
+    if (eco >= 50) { result = "🎉 Eco Hero! You really care for the planet!"; color = "#4caf50"; }
+    else if (eco >= 20) { result = "🙂 Eco Learner! You are learning to make eco-friendly choices."; color = "#ff9800"; }
+    else { result = "⚠️ Eco Needs Help! Try to choose more eco-friendly items next time."; color = "#f44336"; }
 
     shop.innerHTML = `
       <div class="card" style="grid-column: 1 / -1; text-align: center; border-color: ${color};">
         <h2>Game Over</h2>
-        <p>Final Money left: 💰 **${money}**</p>
-        <p>Final Eco Points: 🌍 **${eco}**</p>
+        <p>Final Money left: 💰 ${money}</p>
+        <p>Final Eco Points: 🌍 ${eco}</p>
         <h3 style="color: ${color};">${result}</h3>
       </div>
     `;
@@ -196,27 +148,19 @@ function render() {
     return;
   }
 
-  // 3. 渲染當前回合商品
   shop.innerHTML = "";
-  // 更新訊息區顯示當前回合
   messageBox.style.color = '#1976d2';
   messageBox.innerText = `Round ${round + 1} of ${groups.length}: Make your choice!`;
-  
+
   groups[round].forEach((item, index) => {
     const card = document.createElement("div");
     card.className = "card";
     const canBuy = money >= item.cost;
-    
-    // 判斷 eco 點數是加分還是扣分，顯示不同顏色
-    const ecoColor = item.eco > 0 ? '#4caf50' : '#f44336'; 
-    
+
     card.innerHTML = `
       <h3>${item.name}</h3>
       <p>${item.desc}</p>
-      <p>
-        💰 **${item.cost}** ｜ 
-        🌍 <span style="color:${ecoColor};">${item.eco > 0 ? "+" : ""}${item.eco}</span>
-      </p>
+      <p>💰 ${item.cost}</p>
       <button class="${canBuy ? "" : "disabled"}" ${canBuy ? "" : "disabled"} onclick="chooseItem(${index})">Choose This</button>
     `;
     shop.appendChild(card);
@@ -225,26 +169,19 @@ function render() {
 
 function chooseItem(index) {
   const item = groups[round][index];
-  
   if (money < item.cost) {
     messageBox.style.color = '#d32f2f';
     messageBox.innerText = `Cannot afford ${item.name}! Need 💰${item.cost}, only have 💰${money}.`;
     return;
   }
-  
   money -= item.cost;
   eco += item.eco;
   round++;
-  
-  // 優化：將 alert() 替換為在訊息區顯示結果
   messageBox.style.color = '#00796b';
-  messageBox.innerHTML = `You chose: **${item.name}**. You gained 🌍 **${item.eco}** points.`;
-
-  // 短暫延遲後重新渲染下一回合，讓用戶有時間看到結果
+  messageBox.innerHTML = `You chose: ${item.name}.`;
   setTimeout(render, 500); 
 }
 
-// 初始化畫面
 render();
 </script>
 
