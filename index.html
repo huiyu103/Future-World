@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eco Choice Island - Hidden Eco Points</title>
+<title>Eco Choice Island - Custom Money</title>
 <style>
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -14,121 +14,80 @@ body {
     flex-direction: column;
     align-items: center;
 }
-h1 { 
-    text-align: center; 
-    font-size: 28px; 
-    color: #00796b;
-    margin-bottom: 5px;
-}
-.status { 
-    display: flex; 
-    justify-content: space-around; 
-    margin: 15px 0; 
-    font-size: 20px; 
-    width: 100%;
-    max-width: 600px;
-    padding: 10px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+h1 { text-align: center; font-size: 28px; color: #00796b; margin-bottom: 5px; }
+.status { display: flex; justify-content: space-around; margin: 15px 0; font-size: 20px; width: 100%; max-width: 600px; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 .status div { padding: 0 10px; }
-#shop {
-    display: grid;
-    grid-template-columns: 1fr; 
-    gap: 20px;
-    width: 100%;
-    max-width: 700px;
-    margin-top: 20px;
-}
-@media (min-width: 600px) {
-    #shop { grid-template-columns: 1fr 1fr; }
-}
-.card { 
-    background: #ffffff; 
-    border-radius: 12px; 
-    padding: 20px; 
-    box-shadow: 0 6px 10px rgba(0,0,0,0.1); 
-    border: 1px solid #c8e6c9;
-    transition: transform 0.2s;
-}
+#shop { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; max-width: 700px; margin-top: 20px; }
+@media (min-width: 600px) { #shop { grid-template-columns: 1fr 1fr; } }
+.card { background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 6px 10px rgba(0,0,0,0.1); border: 1px solid #c8e6c9; transition: transform 0.2s; }
 .card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
 .card h3 { font-size: 20px; margin-top: 0; color: #388e3c; }
 .card p { font-size: 16px; margin: 5px 0; }
-button { 
-    width: 100%; 
-    padding: 12px 0; 
-    margin-top: 15px; 
-    font-size: 17px; 
-    border-radius: 10px; 
-    border: none; 
-    background-color: #66bb6a; 
-    color: white; 
-    cursor: pointer; 
-    transition: background-color 0.2s;
-}
+button { width: 100%; padding: 12px 0; margin-top: 15px; font-size: 17px; border-radius: 10px; border: none; background-color: #66bb6a; color: white; cursor: pointer; transition: background-color 0.2s; }
 button:hover:not(.disabled) { background-color: #43a047; }
 button.disabled { background-color: #bdbdbd; cursor: not-allowed; }
-#message {
-    width: 100%;
-    max-width: 600px;
-    min-height: 40px;
-    padding: 10px;
-    margin-top: 10px;
-    text-align: center;
-    font-size: 16px;
-    color: #d32f2f;
-    font-weight: bold;
-}
+#message { width: 100%; max-width: 600px; min-height: 40px; padding: 10px; margin-top: 10px; text-align: center; font-size: 16px; color: #d32f2f; font-weight: bold; }
 .footer { margin-top: 25px; text-align: center; font-size: 14px; color: #555; }
+#startScreen { text-align: center; }
+#startScreen input { padding: 10px; font-size: 16px; width: 120px; margin-right: 10px; border-radius: 5px; border: 1px solid #ccc; }
 </style>
 </head>
 <body>
 
 <h1>🌱 Eco Choice Island</h1>
 
-<div class="status">
-  <div>💰 Money: <span id="money">1000</span></div>
+<div id="startScreen">
+  <p>Enter your starting money: 💰</p>
+  <input type="number" id="customMoney" placeholder="e.g., 1000">
+  <button onclick="startGame()">Start Game</button>
 </div>
 
-<div id="message">Tip: Choose wisely!</div>
+<div class="status" style="display:none;">
+  <div>💰 Money: <span id="money">0</span></div>
+</div>
 
+<div id="message"></div>
 <div id="shop"></div>
-
 <div class="footer">Game developed with simple HTML and JavaScript logic.</div>
 
 <script>
-let money = 1000;
+let money = 0;
 let eco = 0;
 let round = 0;
 const shop = document.getElementById("shop");
 const messageBox = document.getElementById("message");
+const statusBar = document.querySelector('.status');
+const startScreen = document.getElementById('startScreen');
 
-// 商品組合，eco 分數隱藏
 const groups = [
-  [
-    { name: "Disposable Correction Tape", cost: 20, eco: -5, desc: "Cheap and convenient." },
-    { name: "Reusable Correction Tape", cost: 40, eco: 10, desc: "Refillable and sustainable." }
-  ],
-  [
-    { name: "Plastic Building Blocks", cost: 500, eco: -15, desc: "Fun but made of plastic." },
-    { name: "Wooden Building Blocks", cost: 700, eco: 20, desc: "Made of wood." }
-  ],
-  [
-    { name: "Individually Wrapped Egg Rolls", cost: 400, eco: -10, desc: "Lots of packaging." },
-    { name: "Canned Egg Rolls", cost: 200, eco: 15, desc: "Less packaging." }
-  ],
-  [
-    { name: "Bubble Tea in Plastic Cup", cost: 70, eco: -8, desc: "Plastic cup." },
-    { name: "Bubble Tea in Reusable Cup", cost: 60, eco: 12, desc: "Bring your own cup." }
-  ]
+  [{ name: "Disposable Correction Tape", cost: 20, eco: -5, desc: "Cheap and convenient." },
+   { name: "Reusable Correction Tape", cost: 40, eco: 10, desc: "Refillable and sustainable." }],
+  [{ name: "Plastic Building Blocks", cost: 500, eco: -15, desc: "Fun but made of plastic." },
+   { name: "Wooden Building Blocks", cost: 700, eco: 20, desc: "Made of wood." }],
+  [{ name: "Individually Wrapped Egg Rolls", cost: 400, eco: -10, desc: "Lots of packaging." },
+   { name: "Canned Egg Rolls", cost: 200, eco: 15, desc: "Less packaging." }],
+  [{ name: "Bubble Tea in Plastic Cup", cost: 70, eco: -8, desc: "Plastic cup." },
+   { name: "Bubble Tea in Reusable Cup", cost: 60, eco: 12, desc: "Bring your own cup." }]
 ];
+
+function startGame() {
+  const inputMoney = parseInt(document.getElementById('customMoney').value);
+  if (isNaN(inputMoney) || inputMoney <= 0) {
+    alert("Please enter a valid starting amount!");
+    return;
+  }
+  money = inputMoney;
+  eco = 0;
+  round = 0;
+  startScreen.style.display = 'none';
+  statusBar.style.display = 'flex';
+  render();
+}
 
 function render() {
   document.getElementById("money").innerText = money;
 
   if (round >= groups.length || money < Math.min(...groups[round].map(item => item.cost))) {
-    // 結算顯示 eco 分數
     let result = "";
     let color = "";
     if (eco >= 50) { result = "🎉 Eco Hero! You really care for the planet!"; color = "#4caf50"; }
@@ -156,7 +115,6 @@ function render() {
     const card = document.createElement("div");
     card.className = "card";
     const canBuy = money >= item.cost;
-
     card.innerHTML = `
       <h3>${item.name}</h3>
       <p>${item.desc}</p>
@@ -181,8 +139,6 @@ function chooseItem(index) {
   messageBox.innerHTML = `You chose: ${item.name}.`;
   setTimeout(render, 500); 
 }
-
-render();
 </script>
 
 </body>
